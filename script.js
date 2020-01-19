@@ -1,30 +1,56 @@
-// use moment to create time tracker
-// const Today= moment().format('MMMM Do YYYY');
-// let date = $('#currentDay');
-//   date.text(Today);
-// create grid format for each hour.
-// set grid to change colors based on past present future
-// add save button to each grid line
-// create save function to keep activities in local storage
-var date = new Date();
-        document.getElementById("lead").innerHTML = date;
-        var calendar = document.getElementById("calendar");
-        $(document).ready(function () {
-        });
 
-        function setUpHour(i) {
-            var text = "text" + i;
-            var img = "save-image" + i;
-            var time = "time" + i;
-            document.getElementById(text).value = localStorage.getItem(time);
-            document.getElementById(img).addEventListener("click", function () {
-                localStorage.setItem(time, document.getElementById(text).value);
+// set variable to track time of day
+const timeoday = moment();
 
-            });
+// functionn to diplay time 
+function plannertime() {
 
+    $("#currentDay").text(moment().format("dddd, MMMM Do YYYY"));
+
+    $(".time").each(function () {
+        var idtime = $(this).attr("id");
+
+
+        var schedtime = localStorage.getItem(idtime);
+
+
+        if (schedtime !== null) {
+            $(this).children(".schedule").val(schedtime);
         }
-        for (let i = 9; i <= 17; i++) {
-            setUpHour(i);
+    });
+}
+// execute function
+plannertime();
+
+// make save button functional
+var savebutton = $(".saveBtn");
+
+savebutton.on("click", function () {
+    var timeoday = $(this).parent().attr("id");
+    var sched = $(this).siblings(".schedule").val();
+
+    // save text to local storage
+    localStorage.setItem(timeoday, sched);
+});
+
+// functiont to change time colors based on time of day
+function colortime() {
+    hour = timeoday.hours();
+    $(".time").each(function () {
+        var crntHour = parseInt($(this).attr("id"));
+
+
+    // if statement for past present future colors
+        if (crntHour > hour) {
+            $(this).addClass("future")
         }
-        
-        moment().format();
+        else if (crntHour === hour) {
+            $(this).addClass("present");
+        }
+        else {
+            $(this).addClass("past");
+        }
+    })
+}
+// execute function
+colortime();
